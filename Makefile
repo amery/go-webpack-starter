@@ -99,7 +99,7 @@ fmt: go-fmt npm-lint
 lint: go-fmt npm-lint
 
 go-fmt: $(GO_DEPS) FORCE
-	$(GO) mod tidy -v
+	$(GO) mod tidy -v || true
 	@find -name '*.go' | xargs -r $(GOFMT) $(GOFMT_FLAGS)
 
 npm-lint: $(NPM_DEPS) FORCE
