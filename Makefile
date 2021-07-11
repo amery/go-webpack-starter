@@ -44,7 +44,7 @@ NAME ?= $(shell echo $(HOSTNAME) | tr '.' '_')
 
 # generated files
 #
-ASSETS_GO_FILE = assets/files.go
+ASSETS_GO_FILE = web/assets/files.go
 HTML_GO_FILE = html/files.go
 
 GENERATED_GO_FILES = $(ASSETS_GO_FILE) $(HTML_GO_FILE)
@@ -87,7 +87,7 @@ npm-deps:
 #
 clean:
 	$(GO) clean -x -r -modcache
-	git ls-files -o assets/ | xargs -rt rm
+	git ls-files -o $(dir $(ASSETS_GO_FILE)) | xargs -rt rm
 	rm -rf $(B) node_modules/
 	rm -f $(GENERATED_GO_FILES) npm-shrinkwrap.json package-lock.json
 

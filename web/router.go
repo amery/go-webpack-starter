@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	"github.com/amery/go-webpack-starter/assets"
+	"github.com/amery/go-webpack-starter/web/assets"
 	"github.com/amery/go-webpack-starter/html"
 )
 

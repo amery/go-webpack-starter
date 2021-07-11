@@ -10,7 +10,7 @@ module.exports = {
     'css/index': Path.resolve(__dirname, '../../src/scss/index.scss'),
   },
   output: {
-    path: Path.join(__dirname, '../../assets'),
+    path: Path.join(__dirname, '../../web/assets'),
     filename: '[name].js',
   },
   plugins: [
