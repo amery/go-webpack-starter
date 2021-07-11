@@ -8,6 +8,8 @@ import (
 	"github.com/amery/go-webpack-starter/web/server"
 )
 
+var cfg = NewConfig()
+
 type ServerConfig struct {
 	Server      server.ServerConfig
 	Development bool
