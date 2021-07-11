@@ -37,7 +37,7 @@ MODD_URL = github.com/cortesi/modd/cmd/modd
 MOD = $(shell sed -n -e 's/^module \(.*\)/\1/p' go.mod)
 PORT ?= 8080
 DEV_PORT ?= 8081
-SERVER ?= server
+SERVER ?= example
 
 TRAEFIKNET ?= traefiknet
 HOSTNAME ?= example.org
