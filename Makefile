@@ -1,4 +1,4 @@
-.PHONY: all clean deps build run dev
+.PHONY: all clean deps build run dev watch
 
 # locations
 #
@@ -13,6 +13,7 @@ DOCKER_COMPOSE_TRAEFIK = $(CURDIR)/docker-compose.yml
 MODD_TRAEFIK_CONF = $(CURDIR)/etc/modd.conf
 MODD_RUN_CONF = $(B)/modd-run.conf
 MODD_DEV_CONF = $(B)/modd-dev.conf
+MODD_WATCH_CONF = $(B)/modd-watch.conf
 
 # tools
 #
@@ -107,7 +108,7 @@ npm-lint: $(NPM_DEPS) FORCE
 
 # run
 #
-MODD_CONF_FILES = $(MODD_RUN_CONF) $(MODD_DEV_CONF)
+MODD_CONF_FILES = $(MODD_RUN_CONF) $(MODD_DEV_CONF) $(MODD_WATCH_CONF)
 
 .PHONY: modd-conf
 
@@ -119,6 +120,9 @@ $(MODD_RUN_CONF): src/modd/run.conf
 
 $(MODD_DEV_CONF): MODE=dev
 $(MODD_DEV_CONF): src/modd/dev.conf
+
+$(MODD_WATCH_CONF): MODE=watch
+$(MODD_WATCH_CONF): src/modd/watch.conf
 
 $(MODD_CONF_FILES): Makefile
 $(MODD_CONF_FILES):
@@ -137,9 +141,10 @@ $(MODD_CONF_FILES):
 
 run: $(MODD_RUN_CONF)
 dev: $(MODD_DEV_CONF)
+watch: $(MODD_WATCH_CONF)
 
-run dev: $(MODD) go-deps $(NPM_DEPS)
-run dev:
+run dev watch: $(MODD) go-deps $(NPM_DEPS)
+run dev watch:
 	env PORT=$(PORT) BACKEND=$(DEV_PORT) $(MODD) $(MODD_FLAGS) -f $<
 
 # build
