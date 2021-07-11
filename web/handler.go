@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/amery/go-webpack-starter/html"
+	"github.com/amery/go-webpack-starter/web/html"
 )
 
 type View struct {

@@ -45,7 +45,7 @@ NAME ?= $(shell echo $(HOSTNAME) | tr '.' '_')
 # generated files
 #
 ASSETS_GO_FILE = web/assets/files.go
-HTML_GO_FILE = html/files.go
+HTML_GO_FILE = web/html/files.go
 
 GENERATED_GO_FILES = $(ASSETS_GO_FILE) $(HTML_GO_FILE)
 

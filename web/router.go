@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/amery/go-webpack-starter/web/assets"
-	"github.com/amery/go-webpack-starter/html"
+	"github.com/amery/go-webpack-starter/web/html"
 )
 
 func (c *Router) Compile() error {
