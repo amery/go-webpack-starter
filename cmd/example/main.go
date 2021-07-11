@@ -9,7 +9,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use: "example",
+	Use:   "example",
 	Short: "just a go-webpack-starter skeleton",
 }
 

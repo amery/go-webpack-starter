@@ -17,7 +17,7 @@ type Router struct {
 
 // Command
 var serveCmd = &cobra.Command{
-	Use: "serve",
+	Use:   "serve",
 	Short: "serves example service",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		flags.GetMapper(cmd.Flags()).Parse()
