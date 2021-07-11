@@ -9,11 +9,13 @@ import (
 	"go.sancus.dev/file2go/html"
 )
 
+type Collection = html.Collection
+
 type ctxKey int
 
 const collectionCtxKey ctxKey = 0
 
-func Middleware(h html.Collection) func(http.Handler) http.Handler {
+func Middleware(h *html.Collection) func(http.Handler) http.Handler {
 	key := collectionCtxKey
 
 	return func(next http.Handler) http.Handler {

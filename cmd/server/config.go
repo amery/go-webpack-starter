@@ -1,35 +1,24 @@
 package main
 
 import (
-	"time"
-)
+	"log"
 
-const (
-	DefaultPIDFile         = "/tmp/tableflip.pid"
-	DefaultPort            = 8080
-	DefaultReadTimeout     = 5 * time.Second
-	DefaultWriteTimeout    = 5 * time.Second
-	DefaultIdleTimeout     = 30 * time.Second
-	DefaultGracefulTimeout = 60 * time.Second
+	"github.com/creasty/defaults"
+
+	"github.com/amery/go-webpack-starter/web/server"
 )
 
 type ServerConfig struct {
-	Development     bool
-	PIDFile         string
-	Port            uint16
-	ReadTimeout     time.Duration
-	WriteTimeout    time.Duration
-	IdleTimeout     time.Duration
-	GracefulTimeout time.Duration
+	Server      server.ServerConfig
+	Development bool
 }
 
-func NewConfig() ServerConfig {
-	return ServerConfig{
-		PIDFile:         DefaultPIDFile,
-		Port:            DefaultPort,
-		ReadTimeout:     DefaultReadTimeout,
-		WriteTimeout:    DefaultWriteTimeout,
-		IdleTimeout:     DefaultIdleTimeout,
-		GracefulTimeout: DefaultGracefulTimeout,
+func NewConfig() *ServerConfig {
+	c := &ServerConfig{}
+
+	if err := defaults.Set(c); err != nil {
+		log.Fatal(err)
 	}
+
+	return c
 }

@@ -31,13 +31,13 @@ func (c Router) Reload() error {
 	return nil
 }
 
-func (c *Router) Handler() http.Handler {
+func (c *Router) Handler(t *html.Collection) http.Handler {
 	// and compose the router
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(assets.Middleware(c.HashifyAssets))
-	r.Use(html.Middleware(c.html))
+	r.Use(html.Middleware(t))
 	r.MethodFunc("GET", "/", HandleIndex)
 
 	return r
