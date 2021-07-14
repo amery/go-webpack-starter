@@ -1,19 +1,10 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/spf13/cobra"
 
 	"go.sancus.dev/config/flags"
-
-	"github.com/amery/go-webpack-starter/web"
 )
-
-type Router struct {
-	web.Router
-	http.Handler
-}
 
 // Command
 var serveCmd = &cobra.Command{
@@ -23,23 +14,18 @@ var serveCmd = &cobra.Command{
 		flags.GetMapper(cmd.Flags()).Parse()
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		// compile templates
-		html, err := web.CompileHtml(!cfg.Development)
-		if err != nil {
-			return err
-		}
 
 		// prepare server
-		r := web.Router{
+		r := &Router{
 			HashifyAssets: !cfg.Development,
 		}
 
-		h := &Router{
-			Router:  r,
-			Handler: r.Handler(html),
+		// compile templates
+		if err := r.Compile(); err != nil {
+			return err
 		}
 
-		return cfg.Server.ListenAndServe(h)
+		return cfg.Server.ListenAndServe(r)
 	},
 }
 

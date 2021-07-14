@@ -30,7 +30,7 @@ func Middleware(h *html.Collection) func(http.Handler) http.Handler {
 func View(r *http.Request, name string, data interface{}) render.Renderer {
 	key := collectionCtxKey
 
-	if h, ok := r.Context().Value(key).(html.Collection); ok {
+	if h, ok := r.Context().Value(key).(*html.Collection); ok {
 		if v, err := h.View(name, data); err == nil {
 			return v
 		} else {
