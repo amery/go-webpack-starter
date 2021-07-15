@@ -1,42 +1,69 @@
 package html
 
 import (
-	"context"
 	"log"
 	"net/http"
 
-	"github.com/go-chi/render"
 	"go.sancus.dev/file2go/html"
+	"go.sancus.dev/web"
+	"go.sancus.dev/core/context"
+	"go.sancus.dev/core/errors"
 )
 
 type Collection = html.Collection
 
-type ctxKey int
-
-const collectionCtxKey ctxKey = 0
-
+// Middleware that attaches a HTML Template context to the request
 func Middleware(h *html.Collection) func(http.Handler) http.Handler {
-	key := collectionCtxKey
-
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
-			r = r.WithContext(context.WithValue(r.Context(), key, h))
-			next.ServeHTTP(w, r)
+			ctx := WithHtmlContext(r.Context(), h)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 		return http.HandlerFunc(fn)
 	}
 }
 
-func View(r *http.Request, name string, data interface{}) render.Renderer {
-	key := collectionCtxKey
+// Returns a Renderer HTML Template attached to the given data
+func View(r *http.Request, name string, data interface{}) web.Renderer {
 
-	if h, ok := r.Context().Value(key).(*html.Collection); ok {
-		if v, err := h.View(name, data); err == nil {
-			return v
-		} else {
-			log.Fatal(err)
-		}
+	if t := HtmlContext(r.Context()); t == nil {
+		// Not Found
+		log.Fatal(ErrContextNotFound)
+	} else if v, err := t.View(name, data); err == nil {
+		// View Ready
+		return v
+	} else {
+		// Template Not found
+		log.Fatal(err)
 	}
-
 	return nil
 }
+
+// HtmlContext returns the HTML Template context attached to a context
+func HtmlContext(ctx context.Context) *html.Collection {
+	if t, ok := ctx.Value(collectionCtxKey).(*html.Collection); ok {
+		return t
+	} else {
+		return nil
+	}
+}
+
+// WithHtmlContext returns a new http.Request Context with a given
+// HTML Template context attached if given
+func WithHtmlContext(ctx context.Context, t *html.Collection) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	if t != nil {
+		ctx = context.WithValue(ctx, collectionCtxKey, t)
+	}
+	return ctx
+}
+
+var (
+	// collectionCtxKey references a collection of html templates
+	collectionCtxKey = context.NewContextKey("HtmlTemplatesContext")
+
+	// Error raised by View() when the HtmlContext isn't available
+	ErrContextNotFound = errors.New("%s not found in %s", "HtmlContext", "http.Request")
+)
