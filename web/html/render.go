@@ -4,10 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"go.sancus.dev/file2go/html"
-	"go.sancus.dev/web"
 	"go.sancus.dev/core/context"
 	"go.sancus.dev/core/errors"
+	"go.sancus.dev/file2go/html"
+	"go.sancus.dev/web"
 )
 
 type Collection = html.Collection
