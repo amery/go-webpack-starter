@@ -7,8 +7,9 @@ require (
 	github.com/cortesi/modd v0.0.0-20210222043654-cbdcc23af7d5
 	github.com/creasty/defaults v1.5.1
 	github.com/go-chi/chi/v5 v5.0.0
-	github.com/go-chi/render v1.0.1
 	github.com/spf13/cobra v1.2.1
 	go.sancus.dev/config v0.1.0
+	go.sancus.dev/core v0.6.0
 	go.sancus.dev/file2go v0.14.0
+	go.sancus.dev/web v0.28.2
 )

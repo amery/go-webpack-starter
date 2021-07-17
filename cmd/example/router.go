@@ -3,8 +3,9 @@ package main
 import (
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	"go.sancus.dev/web/router"
 
 	"github.com/amery/go-webpack-starter/web/assets"
 	"github.com/amery/go-webpack-starter/web/html"
@@ -30,7 +31,7 @@ func (c *Router) Compile() error {
 	}
 
 	// and compose then router
-	r := chi.NewRouter()
+	r := router.NewRouter(nil)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(assets.Middleware(c.HashifyAssets))
