@@ -1,8 +1,7 @@
 package main
 
 import (
-	"github.com/spf13/cobra"
-
+	"go.sancus.dev/config/flags/cobra"
 	"go.sancus.dev/config/flags"
 )
 
@@ -31,11 +30,11 @@ var serveCmd = &cobra.Command{
 
 // Flags
 func init() {
-	flags.NewCobraMapper(serveCmd.Flags()).
-		BoolVarP(&cfg.Development, "dev", "d", false, "Don't hashify static files").
-		UintVar16P(&cfg.Server.Port, "port", "p", 0, "HTTP port to listen").
-		StringVarP(&cfg.Server.PIDFile, "pid", "f", "", "Path to PID file").
-		DurationVarP(&cfg.Server.GracefulTimeout, "graceful", "t", 0, "Maximum duration to wait for in-flight requests")
+	cobra.NewMapper(serveCmd.Flags()).
+		VarP(&cfg.Development, "dev", 'd', "Don't hashify static files").
+		VarP(&cfg.Server.Port, "port", 'p', "HTTP port to listen").
+		VarP(&cfg.Server.PIDFile, "pid", 'f', "Path to PID file").
+		VarP(&cfg.Server.GracefulTimeout, "graceful", 't', "Maximum duration to wait for in-flight requests")
 
 	rootCmd.AddCommand(serveCmd)
 }
