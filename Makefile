@@ -3,14 +3,11 @@
 # locations
 #
 B = $(CURDIR)/build
-GOPATH ?= $(shell x --root || echo $(B))
 GOBIN = $(GOPATH)/bin
 NPX_BIN = $(CURDIR)/node_modules/.bin
 
 # config files
 #
-DOCKER_COMPOSE_TRAEFIK = $(CURDIR)/docker-compose.yml
-MODD_TRAEFIK_CONF = $(CURDIR)/etc/modd.conf
 MODD_RUN_CONF = $(B)/modd-run.conf
 MODD_DEV_CONF = $(B)/modd-dev.conf
 MODD_WATCH_CONF = $(B)/modd-watch.conf
@@ -38,10 +35,6 @@ MOD = $(shell sed -n -e 's/^module \(.*\)/\1/p' go.mod)
 PORT ?= 8080
 DEV_PORT ?= 8081
 SERVER ?= example
-
-TRAEFIKNET ?= traefiknet
-HOSTNAME ?= example.org
-NAME ?= $(shell echo $(HOSTNAME) | tr '.' '_')
 
 # generated files
 #
@@ -190,38 +183,6 @@ go-build: $(GO_FILES) $(GO_DEPS) FORCE
 
 $(GOBIN)/$(SERVER): $(GO_FILES) $(GO_DEPS)
 	$(GOGET) $(GOGET_FLAGS) ./cmd/$(@F)
-
-# docker-compose
-#
-.PHONY: build-image start stop
-
-DOCKER_COMPOSE_ENV = USER_NAME=$(shell id -nu) USER_UID=$(shell id -ru) USER_GID=$(shell id -rg) PORT=$(PORT) GOPATH=$(GOPATH)
-DOCKER_COMPOSE = env $(DOCKER_COMPOSE_ENV) docker-compose
-
-build-image: $(DOCKER_COMPOSE_TRAEFIK) $(MODD_TRAEFIK_CONF)
-	$(DOCKER_COMPOSE) build --pull
-
-start: $(DOCKER_COMPOSE_TRAEFIK) $(MODD_TRAEFIK_CONF)
-	$(DOCKER_COMPOSE) up -d
-	$(DOCKER_COMPOSE) logs -f
-
-stop: $(DOCKER_COMPOSE_TRAEFIK)
-	$(DOCKER_COMPOSE) down --remove-orphans
-
-$(DOCKER_COMPOSE_TRAEFIK): src/modd/traefik/docker-compose.yml
-$(MODD_TRAEFIK_CONF): src/modd/traefik.conf
-
-$(DOCKER_COMPOSE_TRAEFIK) $(MODD_TRAEFIK_CONF): Makefile
-$(DOCKER_COMPOSE_TRAEFIK) $(MODD_TRAEFIK_CONF):
-	@mkdir -p $(@D)
-	@sed \
-		-e "s|@@SERVER@@|$(SERVER)|g" \
-		-e "s|@@HOSTNAME@@|$(HOSTNAME)|g" \
-		-e "s|@@NAME@@|$(NAME)|g" \
-		-e "s|@@TRAEFIKNET@@|$(TRAEFIKNET)|g" \
-		$< > $@~
-	@mv $@~ $@
-	@echo ${@F} updated.
 
 # FORCE
 .PHONY: FORCE
