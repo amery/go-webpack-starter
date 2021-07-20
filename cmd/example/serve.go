@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go.sancus.dev/config/flags/cobra"
 	"go.sancus.dev/config/flags"
+	"go.sancus.dev/config/flags/cobra"
 )
 
 // Command
