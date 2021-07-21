@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/creasty/defaults"
+	"go.sancus.dev/config/flags"
 
 	"github.com/amery/go-webpack-starter/web/server"
 )
@@ -18,7 +18,7 @@ type ServerConfig struct {
 func NewConfig() *ServerConfig {
 	c := &ServerConfig{}
 
-	if err := defaults.Set(c); err != nil {
+	if err := flags.SetDefaults(c); err != nil {
 		log.Fatal(err)
 	}
 
