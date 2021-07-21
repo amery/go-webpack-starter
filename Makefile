@@ -6,6 +6,8 @@ B = $(CURDIR)/build
 GOBIN = $(GOPATH)/bin
 NPX_BIN = $(CURDIR)/node_modules/.bin
 
+BINDIR ?= $(GOBIN)
+
 # config files
 #
 MODD_RUN_CONF = $(B)/modd-run.conf
@@ -34,7 +36,6 @@ MODD_URL = github.com/cortesi/modd/cmd/modd
 MOD = $(shell sed -n -e 's/^module \(.*\)/\1/p' go.mod)
 PORT ?= 8080
 DEV_PORT ?= 8081
-SERVER ?= example
 
 # generated files
 #
@@ -121,12 +122,12 @@ $(MODD_CONF_FILES): Makefile
 $(MODD_CONF_FILES):
 	@mkdir -p $(@D)
 	@sed \
+		-e "s|@@BINDIR@@|$(BINDIR)|g" \
 		-e "s|@@NPM@@|$(NPM)|g" \
 		-e "s|@@GO@@|$(GO)|g" \
 		-e "s|@@GOFMT@@|$(GOFMT) $(GOFMT_FLAGS)|g" \
 		-e "s|@@GOGET@@|$(GOGET)|g" \
 		-e "s|@@FILE2GO@@|$(notdir $(FILE2GO))|g" \
-		-e "s|@@SERVER@@|$(SERVER)|g" \
 		-e "s|@@MODE@@|$(MODE)|g" \
 		$< > $@~
 	@mv $@~ $@
@@ -180,9 +181,6 @@ $(HTML_GO_FILE): $(HTML_FILES) $(FILE2GO) Makefile
 
 go-build: $(GO_FILES) $(GO_DEPS) FORCE
 	$(GOGET) $(GOGET_FLAGS) ./...
-
-$(GOBIN)/$(SERVER): $(GO_FILES) $(GO_DEPS)
-	$(GOGET) $(GOGET_FLAGS) ./cmd/$(@F)
 
 # FORCE
 .PHONY: FORCE
