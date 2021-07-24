@@ -20,11 +20,11 @@ type Reloader interface {
 
 type ServerConfig struct {
 	Port            uint16        `default:"8080"`
-	PIDFile         string        `default:"/tmp/tableflip.pid"`
-	ReadTimeout     time.Duration `default:"5s"`
-	WriteTimeout    time.Duration `default:"5s"`
-	IdleTimeout     time.Duration `default:"30s"`
-	GracefulTimeout time.Duration `default:"60s"`
+	PIDFile         string        `yaml:"pid_file"         default:"/tmp/tableflip.pid"`
+	ReadTimeout     time.Duration `yaml:"read_timeout"     default:"5s"`
+	WriteTimeout    time.Duration `yaml:"write_timeout"    default:"5s"`
+	IdleTimeout     time.Duration `yaml:"idle_timeout"     default:"30s"`
+	GracefulTimeout time.Duration `yaml:"graceful_timeout" default:"60s"`
 }
 
 func (sc *ServerConfig) ListenAndServe(router http.Handler) error {
