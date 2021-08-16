@@ -1,4 +1,4 @@
-//go:generate file2go -p assets -o files.go css/index.css css/index.css.map js/index.js js/index.js.LICENSE.txt js/index.js.map
+//go:generate go run go.sancus.dev/file2go/cmd/file2go -p assets -o files.go css/index.css css/index.css.map js/index.js js/index.js.LICENSE.txt js/index.js.map
 
 package assets
 

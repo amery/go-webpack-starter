@@ -23,13 +23,14 @@ GOGET = $(GO) get
 GOGET_FLAGS = -v
 NPM = npm
 
-FILE2GO = $(GOBIN)/file2go
 MODD = $(GOBIN)/modd
 MODD_FLAGS = -b
 WEBPACK = $(NPX_BIN)/webpack
 
 FILE2GO_URL = go.sancus.dev/file2go/cmd/file2go
 MODD_URL = github.com/cortesi/modd/cmd/modd
+
+FILE2GO = $(GO) run $(FILE2GO_URL)
 
 # magic constants
 #
@@ -53,19 +54,14 @@ all: build
 deps: go-deps npm-deps
 
 # go-deps
-GO_DEPS = $(FILE2GO) $(MODD)
+GO_DEPS = $(MODD)
 
 go-deps: $(GO_DEPS)
 
-$(FILE2GO): URL=$(FILE2GO_URL)
 $(MODD): URL=$(MODD_URL)
 
 $(GO_DEPS):
 	$(GOGET) $(GOGET_FLAGS) $(URL)
-
-.PHONY: file2go
-file2go:
-	env GO111MODULE=off $(GOGET) $(GOGET_FLAGS) $(FILE2GO_URL)
 
 # npm-deps
 NPM_DEPS = $(WEBPACK)
@@ -127,7 +123,7 @@ $(MODD_CONF_FILES):
 		-e "s|@@GO@@|$(GO)|g" \
 		-e "s|@@GOFMT@@|$(GOFMT) $(GOFMT_FLAGS)|g" \
 		-e "s|@@GOGET@@|$(GOGET)|g" \
-		-e "s|@@FILE2GO@@|$(notdir $(FILE2GO))|g" \
+		-e "s|@@FILE2GO@@|$(FILE2GO)|g" \
 		-e "s|@@MODE@@|$(MODE)|g" \
 		$< > $@~
 	@mv $@~ $@
@@ -173,11 +169,11 @@ npm-build: $(NPM_DEPS) FORCE
 .INTERMEDIATE: $(NPM_BUILT_MARK)
 
 # go-build
-$(ASSETS_GO_FILE): $(NPM_BUILT_MARK) $(FILE2GO) $(ASSETS_FILES)
-	$(ASSETS_FILES_FILTER) | sort -uV | sed -e 's|^$(@D)/||' | (cd $(@D) && xargs -t $(notdir $(FILE2GO)) -p assets -o $(@F))
+$(ASSETS_GO_FILE): $(NPM_BUILT_MARK) $(ASSETS_FILES)
+	$(ASSETS_FILES_FILTER) | sort -uV | sed -e 's|^$(@D)/||' | (cd $(@D) && xargs -t $(FILE2GO) -p assets -o $(@F))
 
-$(HTML_GO_FILE): $(HTML_FILES) $(FILE2GO) Makefile
-	$(HTML_FILES_FILTER) | sort -uV | sed -e 's|^$(@D)/||' | (cd $(@D) && xargs -t $(notdir $(FILE2GO)) -p html -T html -o $(@F))
+$(HTML_GO_FILE): $(HTML_FILES) Makefile
+	$(HTML_FILES_FILTER) | sort -uV | sed -e 's|^$(@D)/||' | (cd $(@D) && xargs -t $(FILE2GO) -p html -T html -o $(@F))
 
 go-build: $(GO_FILES) $(GO_DEPS) FORCE
 	$(GOGET) $(GOGET_FLAGS) ./...

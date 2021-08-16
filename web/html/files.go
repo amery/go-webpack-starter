@@ -1,4 +1,4 @@
-//go:generate file2go -p html -T html -o files.go index.gohtml
+//go:generate go run go.sancus.dev/file2go/cmd/file2go -p html -T html -o files.go index.gohtml
 
 package html
 

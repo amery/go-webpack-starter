@@ -35,7 +35,7 @@ func (c *Router) Compile() error {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(assets.Middleware(c.HashifyAssets))
-	r.Use(html.Middleware(&h))
+	r.Use(html.Middleware(h))
 	r.MethodFunc("GET", "/", HandleIndex)
 
 	c.Handler = r
