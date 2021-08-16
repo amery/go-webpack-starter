@@ -21,6 +21,7 @@ GOFMT = gofmt
 GOFMT_FLAGS = -w -l -s
 GOGET = $(GO) get
 GOGET_FLAGS = -v
+GOGENERATE_FLAGS = -v
 NPM = npm
 
 MODD = $(GOBIN)/modd
@@ -149,7 +150,7 @@ HTML_FILES = $(shell set -x; $(HTML_FILES_FILTER))
 NPM_FILES = $(shell set -x; $(NPM_FILES_FILTER))
 GO_FILES = $(shell set -x; $(GO_FILES_FILTER)) $(GENERATED_GO_FILES)
 
-.PHONY: npm-build go-build
+.PHONY: npm-build go-generate go-build
 
 build: go-build
 
@@ -177,6 +178,11 @@ $(HTML_GO_FILE): $(HTML_FILES) Makefile
 
 go-build: $(GO_FILES) $(GO_DEPS) FORCE
 	$(GOGET) $(GOGET_FLAGS) ./...
+
+go-generate: $(GO_FILES) $(GO_DEPS)
+	@git grep -l '^//go:generate' | sed -n -e 's|\(.*\)/[^/]\+\.go$$|\1|p' | sort -u | while read d; do \
+		git grep -l '^//go:generate' "$$d" | grep '\.go$$' | xargs -r $(GO) generate $(GOGENERATE_FLAGS); \
+	done
 
 # FORCE
 .PHONY: FORCE
