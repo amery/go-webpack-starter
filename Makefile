@@ -21,6 +21,8 @@ GOFMT = gofmt
 GOFMT_FLAGS = -w -l -s
 GOGET = $(GO) get
 GOGET_FLAGS = -v
+GOINSTALL = $(GO) install
+GOINSTALL_FLAGS = -v
 GOGENERATE_FLAGS = -v
 NPM = npm
 
@@ -29,7 +31,7 @@ MODD_FLAGS = -b
 WEBPACK = $(NPX_BIN)/webpack
 
 FILE2GO_URL = go.sancus.dev/file2go/cmd/file2go
-MODD_URL = github.com/cortesi/modd/cmd/modd
+MODD_URL = github.com/cortesi/modd/cmd/modd@latest
 
 FILE2GO = $(GO) run $(FILE2GO_URL)
 
@@ -62,7 +64,7 @@ go-deps: $(GO_DEPS)
 $(MODD): URL=$(MODD_URL)
 
 $(GO_DEPS):
-	$(GOGET) $(GOGET_FLAGS) $(URL)
+	$(GOINSTALL) $(GOGET_FLAGS) $(URL)
 
 # npm-deps
 NPM_DEPS = $(WEBPACK)
