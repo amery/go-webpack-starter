@@ -19,6 +19,8 @@ MODD_WATCH_CONF = $(B)/modd-watch.conf
 GO = go
 GOFMT = gofmt
 GOFMT_FLAGS = -w -l -s
+GOBUILD = $(GO) build
+GOBUILD_FLAGS = -v
 GOGET = $(GO) get
 GOGET_FLAGS = -v
 GOINSTALL = $(GO) install
@@ -60,11 +62,12 @@ deps: go-deps npm-deps
 GO_DEPS = $(MODD)
 
 go-deps: $(GO_DEPS)
+	$(GOGET) $(GOGET_FLAGS) ./...
 
 $(MODD): URL=$(MODD_URL)
 
 $(GO_DEPS):
-	$(GOINSTALL) $(GOGET_FLAGS) $(URL)
+	$(GOINSTALL) $(GOINSTALL_FLAGS) $(URL)
 
 # npm-deps
 NPM_DEPS = $(WEBPACK)
@@ -125,7 +128,8 @@ $(MODD_CONF_FILES):
 		-e "s|@@NPM@@|$(NPM)|g" \
 		-e "s|@@GO@@|$(GO)|g" \
 		-e "s|@@GOFMT@@|$(GOFMT) $(GOFMT_FLAGS)|g" \
-		-e "s|@@GOGET@@|$(GOGET)|g" \
+		-e "s|@@GOGET@@|$(GOGET) $(GOGET_FLAGS)|g" \
+		-e "s|@@GOBUILD@@|$(GOBUILD) $(GOBUILD_FLAGS)|g" \
 		-e "s|@@FILE2GO@@|$(FILE2GO)|g" \
 		-e "s|@@MODE@@|$(MODE)|g" \
 		$< > $@~
@@ -179,7 +183,7 @@ $(HTML_GO_FILE): $(HTML_FILES) Makefile
 	$(HTML_FILES_FILTER) | sort -uV | sed -e 's|^$(@D)/||' | (cd $(@D) && xargs -t $(FILE2GO) -p html -T html -o $(@F))
 
 go-build: $(GO_FILES) $(GO_DEPS) FORCE
-	$(GOGET) $(GOGET_FLAGS) ./...
+	$(GOBUILD) $(GOBUILD_FLAGS) ./...
 
 go-generate: $(GO_FILES) $(GO_DEPS)
 	@git grep -l '^//go:generate' | sed -n -e 's|\(.*\)/[^/]\+\.go$$|\1|p' | sort -u | while read d; do \
